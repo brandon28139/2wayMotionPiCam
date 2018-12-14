@@ -1,17 +1,31 @@
-#!/usr/bin/env python3
-import time
-from http.server import HTTPServer
-from server import Server
+import cherrypy
 
-HOST_NAME = 'localhost'
-PORT_NUMBER = 8000
+
+class HelloWorld(object):
+    @cherrypy.expose
+    def index(self, length = 0):
+        return """<html>
+          <head></head>
+          <body>
+            <form method="get" action="generate">
+              <input type="text" value="8" name="length" />
+              <button type="submit">Give it now!</button>
+            </form>
+          </body>
+        </html>"""
+
+    @cherrypy.expose
+    def generate(self, length = 0):
+        return """<html>
+                  <head></head>
+                  <body>
+                    <form method="get" action="index">
+                      <input type="text" value="8" name="length" />
+                      <button type="submit">Hit me now</button>
+                    </form>
+                  </body>
+                </html>"""
+
 
 if __name__ == '__main__':
-    httpd = HTTPServer((HOST_NAME, PORT_NUMBER), Server)
-    print(time.asctime(), 'Server UP - %s:%s' % (HOST_NAME, PORT_NUMBER))
-    try:
-        httpd.serve_forever()
-    except KeyboardInterrupt:
-        pass
-    httpd.server_close()
-    print(time.asctime(), 'Server DOWN - %s:%s' % (HOST_NAME, PORT_NUMBER))
+    cherrypy.quickstart(HelloWorld())
